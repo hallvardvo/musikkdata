@@ -7,7 +7,7 @@ const error = ref<string | null>(null);
 onMounted(async () => {
     try {
         // Fetch all tracks from the Flask server
-        const response = await fetch('http://tunnelen.pagekite.me/query', {
+        const response = await fetch('https://tunnelen.pagekite.me/query', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
