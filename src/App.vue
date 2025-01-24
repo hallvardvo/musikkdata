@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import AllTracks from './components/AllTracks.vue'
+import MostPlayed from './components/MostPlayed.vue'
+import MostSkipped from './components/MostSkipped.vue'
 </script>
 
 <template>
@@ -8,7 +10,8 @@ import AllTracks from './components/AllTracks.vue'
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <AllTracks msg="You did it!" />
+      <MostPlayed />
+      <MostSkipped />
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
