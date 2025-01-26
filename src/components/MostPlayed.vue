@@ -59,7 +59,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.most-skipped {
+.most-played {
   font-family: Arial, sans-serif;
   padding: 1.5rem;
   background-color: #f9f9f9;
@@ -70,7 +70,7 @@ onMounted(async () => {
   margin: 0 auto;
 }
 
-.most-skipped h2 {
+.most-played h2 {
   font-size: 1.5rem;
   color: #333;
   margin-bottom: 1rem;
