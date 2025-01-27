@@ -1,87 +1,74 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import AllTracks from './components/AllTracks.vue'
 import MostPlayed from './components/MostPlayed.vue'
 import MostSkipped from './components/MostSkipped.vue'
+import NavBar from './components/NavBar.vue'
+import PieChart from './components/PieChart.vue';
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <MostPlayed />
-      <MostSkipped />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
+  <div class="app-container">
+    <main>
+      <NavBar />
+      <div class="content-wrapper">
+        <MostPlayed />
+        <MostSkipped />
+      </div>
+    </main>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
+<style>
+/* App container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-background);
   color: var(--color-text);
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+/* Header */
+header {
+  background-color: var(--color-background);
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+/* Main content */
+main {
+  flex: 1;
+  padding: 1rem;
+  width: 100%;
 }
 
-nav a:first-of-type {
-  border: 0;
+/* Content wrapper */
+.content-wrapper {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px; /* Optional: Limit max width for very large screens */
+  margin: 0 auto; /* Center the content */
+  padding: 0 1rem; /* Add padding to the sides */
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+/* Responsive layout */
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column; /* Stack components vertically on small screens */
   }
 }
 </style>

@@ -1,37 +1,25 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useTracksStore } from '@/stores/tracks';
 
-interface MostPlayedTrack {
-  name: string;
-  artists: string;
-  play_count: number;
-  image: string;
-  link: string;
-}
+const tracksStore = useTracksStore();
 
-const mostPlayed = ref<MostPlayedTrack | null>(null);
-const error = ref<string | null>(null);
-const isLoading = ref(true);
+// Retrieve the most played tracks from the store
+const mostPlayedTracks = computed(() => tracksStore.mostPlayedTracks);
 
-onMounted(async () => {
-  try {
-    const tracksStore = useTracksStore();
-    await tracksStore.fetchMostPlayedOrSkipped(7, 1, 1); // Fetch top 1 most played track
-    mostPlayed.value = tracksStore.mostPlayedTracks[0] || null;
-  } catch (err: any) {
-    error.value = err.message || 'Error loading stats';
-  } finally {
-    isLoading.value = false;
-  }
-});
+// Retrieve the first track (or null if no tracks are available)
+const mostPlayed = computed(() => mostPlayedTracks.value[0] || null);
+
+// Retrieve loading and error states from the store
+const isLoading = computed(() => tracksStore.isLoading);
+const error = computed(() => tracksStore.error);
 </script>
 
 <template>
   <div class="most-played">
-    <h2>🔥 Most Played Track (Last 7 Days)</h2>
+    <h2>🔥 Most Played Track (Last {{ tracksStore.timeRange }} Days)</h2>
 
-    <div v-if="isLoading">Loading...</div>
+    <div v-if="isLoading" class="loading">Loading...</div>
 
     <div v-else-if="error" class="error">{{ error }}</div>
 
@@ -52,7 +40,7 @@ onMounted(async () => {
       </div>
 
       <div v-else class="empty-state">
-        🎧 No tracks played in the last 7 days
+        🎧 No tracks played in the last {{ tracksStore.timeRange }} days
       </div>
     </template>
   </div>
@@ -60,20 +48,24 @@ onMounted(async () => {
 
 <style scoped>
 .most-played {
-  font-family: Arial, sans-serif;
+  background-color: var(--medium-gray);
   padding: 1.5rem;
-  background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
-  max-width: 400px;
-  margin: 0 auto;
+  width: 100%;
+  color: var(--white);
 }
 
 .most-played h2 {
   font-size: 1.5rem;
-  color: #333;
+  color: var(--primary-green);
   margin-bottom: 1rem;
+}
+
+.loading {
+  font-size: 1rem;
+  color: var(--light-gray);
 }
 
 .error {
@@ -99,12 +91,12 @@ onMounted(async () => {
 
 .track h3 {
   font-size: 1.25rem;
-  color: #444;
+  color: var(--white);
 }
 
 .artist {
   font-size: 1rem;
-  color: #888;
+  color: var(--light-gray);
   margin-top: -0.5rem;
 }
 
@@ -118,21 +110,21 @@ onMounted(async () => {
 .play-count .count {
   font-size: 2rem;
   font-weight: bold;
-  color: #2ecc71;
+  color: var(--primary-green);
 }
 
 .play-count .label {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--light-gray);
 }
 
 .empty-state {
   font-size: 1rem;
-  color: #aaa;
+  color: var(--light-gray);
 }
 
 @media (max-width: 480px) {
-  .most-skipped {
+  .most-played {
     padding: 1rem;
   }
 
