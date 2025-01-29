@@ -8,3 +8,6 @@ export interface Track {
   play_count: number;
   positions: number[];
 }
+
+export type MostPlayedTrack = Track;
+export type MostSkippedTrack = Track;
