@@ -3,6 +3,7 @@ import MostPlayed from './components/MostPlayed.vue'
 import MostSkipped from './components/MostSkipped.vue'
 import NavBar from './components/NavBar.vue'
 import PieChart from './components/PieChart.vue';
+import MinutesPlayed from './components/MinutesPlayed.vue';
 </script>
 
 <template>
@@ -12,6 +13,11 @@ import PieChart from './components/PieChart.vue';
       <div class="content-wrapper">
         <MostPlayed />
         <MostSkipped />
+        <div class="stats">
+          <PieChart />
+          <MinutesPlayed />
+        </div>
+
       </div>
     </main>
   </div>
@@ -57,18 +63,29 @@ main {
 
 /* Content wrapper */
 .content-wrapper {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-  max-width: 1200px; /* Optional: Limit max width for very large screens */
-  margin: 0 auto; /* Center the content */
-  padding: 0 1rem; /* Add padding to the sides */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three equal columns */
+  gap: 1rem; /* Space between grid items */
+  padding: 1rem; /* Optional: Add padding to the wrapper */
 }
 
-/* Responsive layout */
+.grid-item {
+  background-color: var(--color-background-mute); /* Example background color */
+  padding: 1rem; /* Padding inside each grid item */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
+  text-align: center; /* Center text */
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .content-wrapper {
-    flex-direction: column; /* Stack components vertically on small screens */
+    grid-template-columns: 1fr; /* Single column on small screens */
   }
 }
 </style>

@@ -7,36 +7,53 @@ const tracksStore = useTracksStore();
 // Retrieve the most played tracks from the store
 const mostPlayedTracks = computed(() => tracksStore.mostPlayedTracks);
 
-// Retrieve the first track (or null if no tracks are available)
-const mostPlayed = computed(() => mostPlayedTracks.value[0] || null);
-
 // Retrieve loading and error states from the store
 const isLoading = computed(() => tracksStore.isLoading);
 const error = computed(() => tracksStore.error);
+
+const truncateName = (name: string, maxLength = 15) => {
+  return name.length > maxLength ? name.substring(0, maxLength) + '...' : name;
+};
+const getFirstArtist = (artists: string): string => {
+  return artists.split(',')[0].trim();
+};
 </script>
 
 <template>
   <div class="most-played">
-    <h2>🔥 Most Played Track (Last {{ tracksStore.timeRange }} Days)</h2>
+    <h2>Most Fully Played Tracks</h2>
 
     <div v-if="isLoading" class="loading">Loading...</div>
 
     <div v-else-if="error" class="error">{{ error }}</div>
 
     <template v-else>
-      <div v-if="mostPlayed" class="track">
-        <div class="image">
-          <a :href="mostPlayed.link" target="_blank" rel="noopener">
-            <img :src="mostPlayed.image" :alt="`Album cover for ${mostPlayed.name}`" />
-          </a>
+      <div v-if="mostPlayedTracks.length > 0">
+        <!-- Display the first track as a card -->
+        <div class="track-card">
+          <div class="image">
+            <a :href="mostPlayedTracks[0].link" target="_blank" rel="noopener">
+              <img :src="mostPlayedTracks[0].image" :alt="`Album cover for ${mostPlayedTracks[0].name}`" />
+            </a>
+          </div>
+          <h3>{{ mostPlayedTracks[0].name }}</h3>
+          <p class="artist">{{ mostPlayedTracks[0].artists }}</p>
+          <div class="play-count">
+            <span class="count">{{ mostPlayedTracks[0].play_count }}</span>
+            <span class="label">plays</span>
+          </div>
         </div>
 
-        <h3>{{ mostPlayed.name }}</h3>
-        <p class="artist">{{ mostPlayed.artists }}</p>
-        <div class="play-count">
-          <span class="count">{{ mostPlayed.play_count }}</span>
-          <span class="label">full plays this week</span>
-        </div>
+        <!-- Display the remaining tracks as a list -->
+        <ul class="track-list">
+          <li v-for="(track, index) in mostPlayedTracks.slice(1)" :key="index" class="track-item">
+            <a :href="track.link" target="_blank" rel="noopener">
+              <img :src="track.image" :alt="`Album cover for ${track.name}`" class="track-image" />
+            </a>
+            <h4>{{ truncateName(track.name) }}</h4>
+            <p class="artist">{{ getFirstArtist(track.artists) }}</p>
+          </li>
+        </ul>
       </div>
 
       <div v-else class="empty-state">
@@ -59,7 +76,7 @@ const error = computed(() => tracksStore.error);
 
 .most-played h2 {
   font-size: 1.5rem;
-  color: var(--primary-green);
+  color: var(--white);
   margin-bottom: 1rem;
 }
 
@@ -74,14 +91,15 @@ const error = computed(() => tracksStore.error);
   font-size: 1rem;
 }
 
-.track {
+.track-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  border-bottom: 2px solid var(--color-border);
 }
 
-.image img {
+.track-card .image img {
   width: 150px;
   height: 150px;
   object-fit: cover;
@@ -89,31 +107,80 @@ const error = computed(() => tracksStore.error);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.track h3 {
+.track-card h3 {
   font-size: 1.25rem;
   color: var(--white);
 }
 
-.artist {
+.track-card .artist {
   font-size: 1rem;
   color: var(--light-gray);
   margin-top: -0.5rem;
 }
 
-.play-count {
+.track-card .play-count {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-.play-count .count {
+.track-card .play-count .count {
   font-size: 2rem;
   font-weight: bold;
-  color: var(--primary-green);
+  color: var(--light-gray);
 }
 
-.play-count .label {
+.track-card .play-count .label {
+  font-size: 0.875rem;
+  color: var(--light-gray);
+}
+
+.track-list {
+  list-style: none;
+  padding: 0;
+}
+
+.track-item {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.track-item a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.track-item .track-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.track-item .track-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.track-item .track-info h4 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.track-item .track-info .artist {
+  font-size: 0.875rem;
+  color: var(--light-gray);
+}
+
+.track-item .track-info .play-count {
   font-size: 0.875rem;
   color: var(--light-gray);
 }
@@ -128,17 +195,31 @@ const error = computed(() => tracksStore.error);
     padding: 1rem;
   }
 
-  .image img {
+  .track-card .image img {
     width: 120px;
     height: 120px;
   }
 
-  .track h3 {
+  .track-card h3 {
     font-size: 1rem;
   }
 
-  .play-count .count {
+  .track-card .play-count .count {
     font-size: 1.5rem;
+  }
+
+  .track-item .track-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .track-item .track-info h4 {
+    font-size: 0.875rem;
+  }
+
+  .track-item .track-info .artist,
+  .track-item .track-info .play-count {
+    font-size: 0.75rem;
   }
 }
 </style>

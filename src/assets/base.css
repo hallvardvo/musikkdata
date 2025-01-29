@@ -33,6 +33,16 @@
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
 
+  --color-background-soft: #f8f8f8;
+
+  --color-text: var
+  --color-text-light: #333333; /* Dark text for light mode */
+  --color-text-dark: #cccccc; /* Light text for dark mode */
+
+  --primary-green: #4caf50;
+  --color-glow-light: rgba(76, 175, 80, 0.5); /* Glow color for light mode */
+  --color-glow-dark: rgba(76, 175, 80, 0.8); /* Glow color for dark mode */
+
   --section-gap: 160px;
 }
 
@@ -47,6 +57,16 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+
+   --color-background-soft: #222222;
+    --color-text-light: #cccccc; /* Light text for dark mode */
+    --color-text-dark: #333333; /* Dark text for light mode */
+
+    --color-shadow-light: rgba(0, 0, 0, 0.2); /* Shadow color for light mode */
+  --color-shadow-dark: rgba(255, 255, 255, 0.2); /* Shadow color for dark mode */
+  --color-glow-light: rgba(76, 175, 80, 0.5); /* Glow color for light mode */
+  --color-glow-dark: rgba(76, 175, 80, 0.8); /* Glow color for dark mode */
+    
   }
 }
 

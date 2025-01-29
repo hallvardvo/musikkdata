@@ -12,15 +12,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useTracksStore } from '@/stores/tracks';
 
 // Define the time range options
 const timeRangeOptions = [
+{ label: '1 Day', value: 1 },
   { label: '7 Days', value: 7 },
   { label: '30 Days', value: 30 },
   { label: '90 Days', value: 90 },
-  { label: '180 Days', value: 180 },
   { label: '1 Year', value: 365 },
 ];
 
@@ -28,7 +28,6 @@ const timeRangeOptions = [
 const timeRange = ref(7);
 
 // Emit the selected time range to the parent component
-const emit = defineEmits(['time-range-change']);
 
 const tracksStore = useTracksStore();
 
@@ -37,8 +36,10 @@ async function setTimeRange(days: number) {
   tracksStore.setTimeRange(days); // Update the time range in the store
   await tracksStore.fetchMostPlayedOrSkipped(days, 1, 30); // Fetch data for the selected time range
   await tracksStore.fetchMostPlayedOrSkipped(days, 0, 30); // Fetch data for the selected time range
-  emit('time-range-change', days);
 }
+onMounted(() => {
+  setTimeRange(timeRange.value);
+});
 </script>
 
 <style scoped>
@@ -46,7 +47,6 @@ async function setTimeRange(days: number) {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 2rem;
   padding: 1rem;
   background-color: var(--color-background);
   border-radius: 12px;
@@ -74,11 +74,10 @@ button:hover {
   background-color: var(--color-background-soft); /* Slightly lighter gray on hover */
   transform: translateY(-2px); /* Lift button on hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+}ƒ
 
 button.active {
-  background-color: var(--primary-green); /* Green background for active button */
-  color: var(--vt-c-white); /* White text for active button */
+  background-color: var(--color-background); /* Green background for active button */
   box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); /* Green shadow for active button */
 }
 
@@ -90,6 +89,8 @@ button.active:hover {
 /* Add a subtle glow effect for active button */
 button.active {
   position: relative;
+  box-shadow: 0 4px 8px var(--color-glow-dark); /* Use shadow color variable */
+
 }
 
 button.active::after {

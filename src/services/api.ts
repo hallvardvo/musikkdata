@@ -1,15 +1,8 @@
 import axios from 'axios';
+import type { Track } from '@/types/types.ts';
 
 const API_BASE_URL = 'https://tunnelen.pagekite.me'; // Your Flask backend URL
 
-interface Track {
-  id: string;
-  name: string;
-  artists: string;
-  image: string;
-  link: string;
-  play_count: number;
-}
 
 export default {
   async getMostPlayedOrSkipped(
@@ -21,10 +14,5 @@ export default {
       params: { days, played_full_song: playedFullSong, limit },
     });
     return response.data;
-  },
-
-  async getAllTracks(): Promise<Track[]> {
-    const response = await axios.get<Track[]>(`${API_BASE_URL}/all_tracks`);
-    return response.data;
-  },
+  }
 };

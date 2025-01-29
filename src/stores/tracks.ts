@@ -1,13 +1,6 @@
 import { defineStore } from 'pinia';
 import api from '@/services/api';
-
-interface Track {
-  name: string;
-  artists: string;
-  play_count: number;
-  image: string;
-  link: string;
-}
+import type { Track } from '@/types/types';
 
 export const useTracksStore = defineStore('tracks', {
   state: () => ({
