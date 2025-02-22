@@ -12,12 +12,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { useTracksStore } from '@/stores/tracks';
 
 // Define the time range options
 const timeRangeOptions = [
-{ label: '1 Day', value: 1 },
+  { label: '1 Day', value: 1 },
   { label: '7 Days', value: 7 },
   { label: '30 Days', value: 30 },
   { label: '90 Days', value: 90 },
@@ -28,18 +28,19 @@ const timeRangeOptions = [
 const timeRange = ref(7);
 
 // Emit the selected time range to the parent component
-
 const tracksStore = useTracksStore();
 
 async function setTimeRange(days: number) {
   timeRange.value = days;
   tracksStore.setTimeRange(days); // Update the time range in the store
-  await tracksStore.fetchMostPlayedOrSkipped(days, 1, 30); // Fetch data for the selected time range
-  await tracksStore.fetchMostPlayedOrSkipped(days, 0, 30); // Fetch data for the selected time range
 }
-onMounted(() => {
-  setTimeRange(timeRange.value);
+
+// Watch for changes in timeRange and fetch data accordingly
+watch(timeRange, async (newRange) => {
+  await tracksStore.fetchMostPlayedOrSkipped(newRange, 30);
 });
+
+setTimeRange(timeRange.value);
 </script>
 
 <style scoped>
@@ -74,42 +75,60 @@ button:hover {
   background-color: var(--color-background-soft); /* Slightly lighter gray on hover */
   transform: translateY(-2px); /* Lift button on hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}ƒ
+}
 
 button.active {
   background-color: var(--color-background); /* Green background for active button */
   box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); /* Green shadow for active button */
-}
-
-button.active:hover {
-  background-color: #45a049; /* Slightly darker green on hover */
-  transform: translateY(-2px); /* Lift active button on hover */
-}
-
-/* Add a subtle glow effect for active button */
-button.active {
   position: relative;
-  box-shadow: 0 4px 8px var(--color-glow-dark); /* Use shadow color variable */
-
+  z-index: 1; /* Ensure the glow is above other elements */
 }
 
+/* Glow effect for active button */
 button.active::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); /* Green glow */
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 10px; /* Slightly larger than the button's border-radius */
+  background: radial-gradient(
+    circle,
+    rgba(76, 175, 80, 0.4) 0%,
+    rgba(76, 175, 80, 0.2) 50%,
+    transparent 70%
+  );
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: -1; /* Place the glow behind the button */
+}
+
+/* Glow effect on hover */
+button.active:hover::after {
+  opacity: 1; /* Show glow on hover */
+  transform: scale(1.1); /* Slightly enlarge the glow */
+}
+
+/* Add a subtle pulse animation for the glow */
+@keyframes glow-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
 }
 
 button.active:hover::after {
-  opacity: 1; /* Show glow on hover */
+  animation: glow-pulse 1.5s infinite ease-in-out; /* Continuous pulse effect */
 }
-
 /* Responsive design */
 @media (max-width: 768px) {
   .nav-bar {

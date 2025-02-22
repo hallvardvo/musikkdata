@@ -40,8 +40,8 @@ const createChart = () => {
         'rgba(69, 160, 73, 0.6)' // Green (#45a049)
       ],
       hoverOffset: 4,
-      borderColor: 'rgba(255, 255, 255, 0.6)'
-    }]
+      borderColor: 'rgba(255, 255, 255, 0.6)',
+      }]
   };
 
   const config: ChartConfiguration<'pie'> = {
